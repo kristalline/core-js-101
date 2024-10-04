@@ -18,8 +18,8 @@
  *   'aa',''    => 'aa'
  *   '',  'bb'  => 'bb'
  */
-function concatenateStrings(/* value1, value2 */) {
-  throw new Error('Not implemented');
+function concatenateStrings(str1, str2) {
+  return `${str1}${str2}`;
 }
 
 
@@ -34,8 +34,8 @@ function concatenateStrings(/* value1, value2 */) {
  *   'b'     => 1
  *   ''      => 0
  */
-function getStringLength(/* value */) {
-  throw new Error('Not implemented');
+function getStringLength(str) {
+  return str.length;
 }
 
 /**
@@ -51,8 +51,8 @@ function getStringLength(/* value */) {
  *   'John','Doe'      => 'Hello, John Doe!'
  *   'Chuck','Norris'  => 'Hello, Chuck Norris!'
  */
-function getStringFromTemplate(/* firstName, lastName */) {
-  throw new Error('Not implemented');
+function getStringFromTemplate(firstName, lastName) {
+  return `Hello, ${firstName} ${lastName}!`;
 }
 
 /**
@@ -65,8 +65,9 @@ function getStringFromTemplate(/* firstName, lastName */) {
  *   'Hello, John Doe!' => 'John Doe'
  *   'Hello, Chuck Norris!' => 'Chuck Norris'
  */
-function extractNameFromTemplate(/* value */) {
-  throw new Error('Not implemented');
+function extractNameFromTemplate(str) {
+  const arr = str.split(' ');
+  return `${arr[1]} ${arr[2].slice(0, -1)}`;
 }
 
 
@@ -80,8 +81,8 @@ function extractNameFromTemplate(/* value */) {
  *   'John Doe'  => 'J'
  *   'cat'       => 'c'
  */
-function getFirstChar(/* value */) {
-  throw new Error('Not implemented');
+function getFirstChar(str) {
+  return str[0];
 }
 
 /**
@@ -95,8 +96,8 @@ function getFirstChar(/* value */) {
  *   'cat'              => 'cat'
  *   '\tHello, World! ' => 'Hello, World!'
  */
-function removeLeadingAndTrailingWhitespaces(/* value */) {
-  throw new Error('Not implemented');
+function removeLeadingAndTrailingWhitespaces(str) {
+  return str.trim();
 }
 
 /**
@@ -110,8 +111,8 @@ function removeLeadingAndTrailingWhitespaces(/* value */) {
  *   'A', 5  => 'AAAAA'
  *   'cat', 3 => 'catcatcat'
  */
-function repeatString(/* value, count */) {
-  throw new Error('Not implemented');
+function repeatString(str, counter) {
+  return str.repeat(counter);
 }
 
 /**
@@ -126,8 +127,9 @@ function repeatString(/* value, count */) {
  *   'I like legends', 'end' => 'I like legs',
  *   'ABABAB','BA' => 'ABAB'
  */
-function removeFirstOccurrences(/* str, value */) {
-  throw new Error('Not implemented');
+function removeFirstOccurrences(str, substr) {
+  const firstIndex = str.indexOf(substr);
+  return str.slice(0, firstIndex) + str.slice(firstIndex + substr.length);
 }
 
 /**
@@ -141,8 +143,8 @@ function removeFirstOccurrences(/* str, value */) {
  *   '<span>' => 'span'
  *   '<a>' => 'a'
  */
-function unbracketTag(/* str */) {
-  throw new Error('Not implemented');
+function unbracketTag(str) {
+  return str.substring(1, str.length - 1);
 }
 
 
@@ -156,8 +158,8 @@ function unbracketTag(/* str */) {
  *   'Thunderstruck' => 'THUNDERSTRUCK'
  *  'abcdefghijklmnopqrstuvwxyz' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
  */
-function convertToUpperCase(/* str */) {
-  throw new Error('Not implemented');
+function convertToUpperCase(str) {
+  return str.toUpperCase();
 }
 
 /**
@@ -175,8 +177,8 @@ function convertToUpperCase(/* str */) {
  *   ],
  *   'info@gmail.com' => ['info@gmail.com']
  */
-function extractEmails(/* str */) {
-  throw new Error('Not implemented');
+function extractEmails(str) {
+  return str.split(';');
 }
 
 /**
@@ -202,10 +204,28 @@ function extractEmails(/* str */) {
  *             '└──────────┘\n'
  *
  */
-function getRectangleString(/* width, height */) {
-  throw new Error('Not implemented');
+const createStr = (num) => String.fromCharCode(num);
+function getRectangleString(width, height) {
+  const upperLine = `${createStr(9484)}${createStr(9472).repeat(width - 2)}${createStr(9488)}\n`;
+  const bottomLine = `${createStr(9492)}${createStr(9472).repeat(width - 2)}${createStr(9496)}\n`;
+  const verticalLine = `${createStr(9474)}${createStr(32).repeat(width - 2)}${createStr(9474)}\n`;
+  const result = `${upperLine}${verticalLine.repeat(height - 2)}${bottomLine}`;
+  //  console.log(result);
+  return result;
 }
 
+/*
+const f = (str) => {
+  const arr = str.split('');
+  console.log(arr);
+  const charcodes = arr.map((el) => el.codePointAt([0]));
+  console.log(charcodes)
+}
+
+f('┌────┐')
+f('└──────────┘');
+f('│  │');
+*/
 
 /**
  * Encode specified string with ROT13 cipher
@@ -223,10 +243,34 @@ function getRectangleString(/* width, height */) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
-}
+function isLetter(charcode) {
+  const maxUpperCase = 65;
+  const minUpperCase = 90;
 
+  const minLowerCase = 97;
+  const maxLowerCase = 122;
+
+  const result = !!((charcode >= maxUpperCase && charcode <= minUpperCase)
+    || (charcode >= minLowerCase && charcode <= maxLowerCase));
+  return result;
+}
+const encodeToRot13 = (str) => {
+  const arr = str.split('');
+  const charcodes = arr.reduce((acc, el) => {
+    const charcode = el.codePointAt([0]);
+    if (isLetter(charcode)) {
+      const newLetter = (charcode >= 65 && charcode < 78) || (charcode >= 97 && charcode < 110)
+        ? String.fromCharCode(charcode + 13) : String.fromCharCode(charcode - 13);
+      acc.push(newLetter);
+      return acc;
+    }
+    acc.push(el);
+    return acc;
+  }, []);
+
+  //  console.log(charcodes.join(''));
+  return charcodes.join('');
+};
 /**
  * Returns true if the value is string; otherwise false.
  * @param {string} value
@@ -240,8 +284,8 @@ function encodeToRot13(/* str */) {
  *   isString('test') => true
  *   isString(new String('test')) => true
  */
-function isString(/* value */) {
-  throw new Error('Not implemented');
+function isString(val) {
+  return typeof val === 'string' || val instanceof String;
 }
 
 
@@ -249,13 +293,13 @@ function isString(/* value */) {
  * Returns playid card id.
  *
  * Playing cards inittial deck inclides the cards in the following order:
- *
- *  'A♣','2♣','3♣','4♣','5♣','6♣','7♣','8♣','9♣','10♣','J♣','Q♣','K♣',
- *  'A♦','2♦','3♦','4♦','5♦','6♦','7♦','8♦','9♦','10♦','J♦','Q♦','K♦',
- *  'A♥','2♥','3♥','4♥','5♥','6♥','7♥','8♥','9♥','10♥','J♥','Q♥','K♥',
- *  'A♠','2♠','3♠','4♠','5♠','6♠','7♠','8♠','9♠','10♠','J♠','Q♠','K♠'
- *
- * (see https://en.wikipedia.org/wiki/Standard_52-card_deck)
+ */
+const cards = ['A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣',
+  'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', '10♦', 'J♦', 'Q♦', 'K♦',
+  'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', '10♥', 'J♥', 'Q♥', 'K♥',
+  'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', '10♠', 'J♠', 'Q♠', 'K♠'];
+
+/** (see https://en.wikipedia.org/wiki/Standard_52-card_deck)
  * Function returns the zero-based index of specified card in the initial deck above.
  *
  * @param {string} value
@@ -269,8 +313,8 @@ function isString(/* value */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(card) {
+  return cards.indexOf(card);
 }
 
 
