@@ -122,10 +122,13 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  if (rect1.left + rect1.width < rect2.left) return false;
+  if (rect1.top + rect1.height < rect2.top) return false;
+  return true;
 }
 
+//  https://stackoverflow.com/questions/16005136/how-do-i-see-if-two-rectangles-intersect-in-javascript-or-pseudocode
 
 /**
  * Returns true, if point lies inside the circle, otherwise false.
@@ -299,7 +302,6 @@ function getDigitalRoot(num) {
   return result;
 }
 
-
 /**
  * Returns true if the specified string has the balanced brackets and false otherwise.
  * Balanced means that is, whether it consists entirely of pairs of opening/closing brackets
@@ -321,10 +323,25 @@ function getDigitalRoot(num) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+const bracket = {
+  '[': ']',
+  '{': '}',
+  '(': ')',
+  '<': '>',
+};
+function isBracketsBalanced(str) {
+  if (str.length % 2 === 1) return false;
+  //  const stack = [];
+  const stack = str.split('').reduce((acc, el) => {
+    if (Object.hasOwn(bracket, el)) {
+      acc.push(el);
+    } else if (bracket[acc.at(-1)] === el) {
+      acc.pop();
+    }
+    return acc;
+  }, []);
+  return !stack.length;
 }
-
 
 /**
  * Returns the string with n-ary (binary, ternary, etc, where n <= 10)
@@ -363,10 +380,20 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
-}
+const iter = (str, start, acc) => {
+  const index = str.indexOf('/');
+  if (index < 0) return acc.substr(0, start);
+  const temp = str.substr(0, index + 1) === acc.substr(start, index + 1);
+  if (!temp) {
+    return acc.substr(0, start);
+  }
+  return iter(str.substr(index + 1), index + 1 + start, acc);
+};
 
+function getCommonDirectoryPath(pathes) {
+  const result = pathes.slice(1).reduce((acc, str) => iter(str, 0, acc), pathes[0]);
+  return result.length > 0 ? result : '';
+}
 
 /**
  * Returns the product of two specified matrixes.
@@ -386,33 +413,31 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
-}
-/*
-  const len = m2.length;
-  const result = m1.map((item, index) => {
-    const collLen = item.length;
-    let summ;
-    for (i = 0; i < collLen; i += 1) {
-      summ += item[i]*m2[index][index]
-    }
-    //  const temp = item.reduce
-  })
 
-  throw new Error('Not implemented');
-  */
+// https://www.geeksforgeeks.org/javascript-program-to-multiply-two-matrices/
+function getMatrixProduct(m1, m2) {
+  const result = m1.map((row) => {
+    const newRow = row.map((_, colIndex) => m2.reduce((acc, item, index) => {
+      console.log('m2:', item, item[colIndex], row[index]);
+      return acc + row[index] * item[colIndex];
+    }, null));
+    return newRow.filter(Boolean);
+  });
+  return result;
+}
 
 /*
 const a = [
-  [1, 0, 0], [0, 1, 0], [0, 0, 1]
-  ]
+  [1, 2],
+  [3, 3]
+]
 const b = [
-  [1, 2, 3], [4, 5, 6], [7, 8, 9]
+  [2, 2],
+  [4, 5]
 ]
 
+console.log(getMatrixProduct(a, b));
 */
-
 
 /**
  * Returns the evaluation of the specified tic-tac-toe position.
@@ -444,8 +469,27 @@ const b = [
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+const isUndef = (val) => val !== undefined;
+function evaluateTicTacToePosition(position) {
+  if (position[0][0] === position[1][1] && position[0][0] === position[2][2]
+    && isUndef(position[0][0])) return position[0][0];
+  if (position[0][1] === position[1][1] && position[0][1] === position[2][1]
+    && isUndef(position[0][1])) return position[0][1];
+  if (position[0][2] === position[1][1] && position[0][2] === position[2][0]
+    && isUndef(position[0][2])) return position[0][2];
+  if (position[0][0] === position[0][1] && position[0][0] === position[0][2]
+    && isUndef(position[0][0])) return position[0][0];
+  if (position[1][0] === position[1][1] && position[1][0] === position[1][2]
+    && isUndef(position[1][0])) return position[1][0];
+  if (position[2][0] === position[2][1] && position[2][0] === position[2][2]
+    && isUndef(position[2][0])) return position[2][0];
+  if (position[0][0] === position[1][0] && position[0][0] === position[2][0]
+    && isUndef(position[0][0])) return position[0][0];
+  if (position[0][1] === position[1][1] && position[0][1] === position[2][1]
+    && isUndef(position[0][1])) return position[0][1];
+  if (position[0][2] === position[1][2] && position[0][2] === position[2][2]
+    && isUndef(position[0][2])) return position[0][2];
+  return undefined;
 }
 
 

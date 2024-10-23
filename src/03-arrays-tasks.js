@@ -7,7 +7,7 @@
  *                                                                                            *
  ******************************************************************************************** */
 
-
+/* eslint-disable no-console */
 /**
  * Returns an index of the specified element in array or -1 if element is not found
  *
@@ -211,8 +211,8 @@ function getTail(arr, n) {
  *    +'20,21,22,23,24\n'
  *    +'30,31,32,33,34'
  */
-function toCsvText(/* arr */) {
-  throw new Error('Not implemented');
+function toCsvText(arr) {
+  return arr.map((item) => `${item.join(',')}\n`).join('').trim();
 }
 
 /**
@@ -288,8 +288,11 @@ function getSecondItems(arr) {
  *  [ 'a', 'b', 'c', null ] => [ 'a', 'b','b', 'c','c','c',  null,null,null,null ]
  *  [ 1,2,3,4,5 ] => [ 1, 2,2, 3,3,3, 4,4,4,4, 5,5,5,5,5 ]
  */
-function propagateItemsByPositionIndex(/* arr */) {
-  throw new Error('Not implemented');
+function propagateItemsByPositionIndex(arr) {
+  return arr.reduce((acc, item, index) => {
+    const temp = Array(index).fill(item);
+    return [...acc, item, ...temp];
+  }, []);
 }
 
 
@@ -453,9 +456,11 @@ function toStringList(arr) {
  *      { country: 'Russia',  city: 'Saint Petersburg' }
  *    ]
  */
-function sortCitiesArray(/* arr */) {
-  throw new Error('Not implemented');
-  //  arr.sort((a, b) => a.country.localeCompare(b.country));
+function sortCitiesArray(arr) {
+  return arr.sort((a, b) => {
+    if (a.country === b.country) return a.city.localeCompare(b.city);
+    return a.country.localeCompare(b.country);
+  });
 }
 
 /**
@@ -557,8 +562,13 @@ function distinct(arr) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+function group(arr, keySelector, valueSelector) {
+  const keys = new Set(arr.map(keySelector));
+  const result = [...keys].map((key) => {
+    const val = arr.filter((obj) => keySelector(obj) === key).map(valueSelector);
+    return [key, val];
+  });
+  return new Map(result);
 }
 
 
